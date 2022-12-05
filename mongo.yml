@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+   - name: install updates
+     tags: always
+     apt:
+       upgrade: dist
+       update_cache: yes
+
+   - name: install required additional packages
+     tags: preinstall
+     package:
+          name:
+          - jq
+          - awscli
+          state: latest
+
+- hosts: mongo_replica_nodes
+  tags: mongoinstall
+  roles:
+   - db_servers
+
+
