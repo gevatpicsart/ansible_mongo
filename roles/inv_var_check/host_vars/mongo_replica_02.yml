@@ -1,0 +1,3 @@
+mongo_conf_path: /etc/qaq02.conf
+mongo_repl_name: ankap_02
+mongo_port: ankap_port02

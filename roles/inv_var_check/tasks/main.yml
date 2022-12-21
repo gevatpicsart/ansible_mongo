@@ -1,0 +1,5 @@
+- name: COPY mongo config file
+  tags: mongoconfig
+  template: 
+    src: mongo-config.j2
+    dest: "{{ mongo_conf_path }}"
