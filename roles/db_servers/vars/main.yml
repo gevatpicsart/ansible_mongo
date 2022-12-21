@@ -1,0 +1,164 @@
+---
+host: mongo_rs1
+script_dir_path: /data/script/backup/
+mongo_repo_key_uri: "https://www.mongodb.org/static/pgp/server-4.4.asc"
+mongo_deb_repo_uri: "deb https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse"
+mongo_storage_path: /storage/db
+mongo_conf_path: /etc/mongod.conf
+mongo_repl_key_path: /etc/mongokeyfile
+mongo_pid_dir_path: /var/run/mongodb/
+mongo_pid_file_path: /var/run/mongodb/mongod.pid
+mongo_deb_tmpfiles_path: "/usr/lib/tmpfiles.d/var.conf"
+mongo_deb_tmpfiles_line: "d /var/run/mongodb 0750 mongodb mongodb -"
+mongo_db_name: magic_db
+mongo_dummy_collection_name: dummyCollection
+mongo_repl_name: MAGIC_RS
+mongo_port: 27017
+mongodb_keyfile_content: |
+     iokip1na8mJKgyJfGkOXCcANNG7tdpgG/UrHxgH4CVjeriDcrTVVbuHQoYu8vpfs
+     cRaVtJZr7Ue4+45DjjjueD+/idgerYZW0WkPGCLXe6URis1cy6+lJ9CxHQngrD0A
+     TXhOo3dwWyLbIIVnF7sgNrokHhLY9Pom05tTYm9EKlsidlizTUqaAa2K0Qv0E1XR
+     k0ZKjINM7sblWki+jYn4cQ0XZfHm4XLCeap8yJ1cPVXJBzSktZkFYE4MUFD60Ax8
+     GxamI14BpaDUY8Wl3wZ3xRAebbBDAR40dfuUwRRE4vV5s5S2JqjpKa1gtvBindVf
+     1fRWO4T16hKhnUVa+FnGpWKHUrHR1TdGEV2JGyh29o8xu+hh+DCjtdbJqJlJzHey
+     o3hQiJ9Ow37yzuPF++3j46mIgE4QNdAjttjHyn04HKS14HCbOqH0zSh1m/bRiFl0
+     47/p8MlsqksAvTCAdJnNHUaf5nI/fmutge7tXwTc0NJbIV15HbaC4Bwr9MMbmgRh
+     83ty3UFazPNwuV5LlRPJr0hIH43jz9SET1cvhlJKE0iD9elCye9BHo6Ik9hM9Aqx
+     DgmZk0G8iam3ybdDaFya+Y9teevY7nRUMIueo8wijTY2OGb9IzLKu7K+USkrjaI7
+     5xWPnYCrSYj8IQKluLEC2AWvoT6pSt5ThIr7uXBL4ugs9NIVV36DzbfmxGOZJVh3
+     JB51oWYjLbCkXNdV5iU9pDn4HXD6wmCjR4AOroTlsMYOHBeNsCeykpVsGVrz6QoY
+     IsWi5taJqN/G2c4L2DV6qFFBwTazXgC3e5u3N+uTFs0Hp+JbcGZpDv0/InrjXbvd
+     +ZR/9rwLEeLmWcFU+lkluuzYPDhCixt9EDff2X6MEt49nF5Eu6GmR7Y3zUHu+kQs
+     7JmugjkHjknkavnKLklhKHkhKLBTExcLJGFBYhgvklhdfkjlHFGFDJghjFSTZYUL
+
+
+     mongo_admin_username: root
+     mongo_admin_pass: password1234
+     mongo_admin_db: admin
+     mongo_admin_role: root
+
+     # mongo_stageuser_username: stageuser	
+     # mongo_stageuser_pass: TOu72Y45HyjviYj9x29w
+     # mongo_stageuser_db: "{{ mongo_db_name }}"
+     # mongo_stageuser_role: Write
+     
+     # mongo_writeuser_username: writeuser
+     # mongo_writeuser_pass: TOu72YviYj9x29w
+     # mongo_writeuser_db: "{{ mongo_db_name }}"
+     # mongo_writeuser_role: Write
+     
+     # mongo_indexuser_username: indexuser
+     # mongo_indexuser_pass: HV2z9YFdQ4y7IeZFzSa
+     # mongo_indexuser_db: "{{ mongo_db_name }}"
+     # mongo_indexuser_role: IndexManage
+     
+     # mongo_readuser_username: readuser
+     # mongo_readuser_pass: UvCmkPc9PYCzxcZm
+     # mongo_readuser_db: "{{ mongo_db_name }}"
+     # mongo_readuser_role: read
+     
+     # mongo_backend_username: backend
+     # mongo_backend_pass: UvCmkuyR67YCzxcZm
+     # mongo_backend_db: "{{ mongo_db_name }}"	
+     # mongo_backend_role: read
+     
+     # mongo_backup_username: backup
+     # mongo_backup_pass: SUGyB656.xeCQTFvqus
+     # mongo_backup_db: admin
+     # mongo_backup_role: backup
+     
+     # mongo_mongodb_exporter_username: mongodb_exporter
+     # mongo_mongodb_exporter_pass: exporter1
+     # mongo_mongodb_exporter_db: admin
+     # mongo_mongodb_exporter_role: read,clusterMonitor
+     
+     # mongo_admin_username: root
+     # mongo_admin_pass: password1234
+     # mongo_admin_db: admin
+     # mongo_admin_role: root
+
+
+
+
+
+
+
+### FOR FURTHER USE AS TEMPLATE
+
+
+# script_dir_path: /data/script/backup/
+# mongo_repo_key_uri: "https://www.mongodb.org/static/pgp/server-4.4.asc"
+# mongo_deb_repo_uri: "deb https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse"
+# mongo_storage_path: /storage/db
+# mongo_conf_path: /etc/mongod.conf
+# mongo_repl_key_path: /etc/mongokeyfile
+# mongo_pid_dir_path: /var/run/mongodb/
+# mongo_pid_file_path: /var/run/mongodb/mongod.pid
+# mongo_deb_tmpfiles_path: "/usr/lib/tmpfiles.d/var.conf"
+# mongo_deb_tmpfiles_line: "d /var/run/mongodb 0750 mongodb mongodb -"
+# mongo_db_name: magic_db
+# mongo_dummy_collection_name: dummyCollection
+# mongo_repl_name: MAGIC_RS
+# mongo_port: 27017
+# mongodb_keyfile_content: |
+#  iokip1na8mJKgyJfGkOXCcANNG7tdpgG/UrHxgH4CVjeriDcrTVVbuHQoYu8vpfs
+#  cRaVtJZr7Ue4+45DjjjueD+/idgerYZW0WkPGCLXe6URis1cy6+lJ9CxHQngrD0A
+#  TXhOo3dwWyLbIIVnF7sgNrokHhLY9Pom05tTYm9EKlsidlizTUqaAa2K0Qv0E1XR
+#  k0ZKjINM7sblWki+jYn4cQ0XZfHm4XLCeap8yJ1cPVXJBzSktZkFYE4MUFD60Ax8
+#  GxamI14BpaDUY8Wl3wZ3xRAebbBDAR40dfuUwRRE4vV5s5S2JqjpKa1gtvBindVf
+#  1fRWO4T16hKhnUVa+FnGpWKHUrHR1TdGEV2JGyh29o8xu+hh+DCjtdbJqJlJzHey
+#  o3hQiJ9Ow37yzuPF++3j46mIgE4QNdAjttjHyn04HKS14HCbOqH0zSh1m/bRiFl0
+#  47/p8MlsqksAvTCAdJnNHUaf5nI/fmutge7tXwTc0NJbIV15HbaC4Bwr9MMbmgRh
+#  83ty3UFazPNwuV5LlRPJr0hIH43jz9SET1cvhlJKE0iD9elCye9BHo6Ik9hM9Aqx
+#  DgmZk0G8iam3ybdDaFya+Y9teevY7nRUMIueo8wijTY2OGb9IzLKu7K+USkrjaI7
+#  5xWPnYCrSYj8IQKluLEC2AWvoT6pSt5ThIr7uXBL4ugs9NIVV36DzbfmxGOZJVh3
+#  JB51oWYjLbCkXNdV5iU9pDn4HXD6wmCjR4AOroTlsMYOHBeNsCeykpVsGVrz6QoY
+#  IsWi5taJqN/G2c4L2DV6qFFBwTazXgC3e5u3N+uTFs0Hp+JbcGZpDv0/InrjXbvd
+#  +ZR/9rwLEeLmWcFU+lkluuzYPDhCixt9EDff2X6MEt49nF5Eu6GmR7Y3zUHu+kQs
+#  7JmugjkHjknkavnKLklhKHkhKLBTExcLJGFBYhgvklhdfkjlHFGFDJghjFSTZYUL
+
+
+# mongo_admin_username: root
+# mongo_admin_pass: password1234
+# mongo_admin_db: admin
+# mongo_admin_role: root
+
+# mongo_stageuser_username: stageuser	
+# mongo_stageuser_pass: TOu72Y45HyjviYj9x29w
+# mongo_stageuser_db: "{{ mongo_db_name }}"
+# mongo_stageuser_role: Write
+
+# mongo_writeuser_username: writeuser
+# mongo_writeuser_pass: TOu72YviYj9x29w
+# mongo_writeuser_db: "{{ mongo_db_name }}"
+# mongo_writeuser_role: Write
+
+# mongo_indexuser_username: indexuser
+# mongo_indexuser_pass: HV2z9YFdQ4y7IeZFzSa
+# mongo_indexuser_db: "{{ mongo_db_name }}"
+# mongo_indexuser_role: IndexManage
+
+# mongo_readuser_username: readuser
+# mongo_readuser_pass: UvCmkPc9PYCzxcZm
+# mongo_readuser_db: "{{ mongo_db_name }}"
+# mongo_readuser_role: read
+
+# mongo_backend_username: backend
+# mongo_backend_pass: UvCmkuyR67YCzxcZm
+# mongo_backend_db: "{{ mongo_db_name }}"	
+# mongo_backend_role: read
+
+# mongo_backup_username: backup
+# mongo_backup_pass: SUGyB656.xeCQTFvqus
+# mongo_backup_db: admin
+# mongo_backup_role: backup
+
+# mongo_mongodb_exporter_username: mongodb_exporter
+# mongo_mongodb_exporter_pass: exporter1
+# mongo_mongodb_exporter_db: admin
+# mongo_mongodb_exporter_role: read,clusterMonitor
+
+# mongo_admin_username: root
+# mongo_admin_pass: password1234
+# mongo_admin_db: admin
+# mongo_admin_role: root

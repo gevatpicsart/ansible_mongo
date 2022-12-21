@@ -1,47 +1,11 @@
-- name: Install Python pip
-  become: true
-  apt:
-    name: python3-pip
-    state: present
-
-- name: Install python3-venv
-  become: true
-  apt:
-    name: python3-venv
-    state: present
-
-- name: install python-setuptools
-  become: true
-  package:
-    name: python-setuptools
-    state: present
-
-- name: Install pymongo package
-  become: true
-  pip:
-    name: pymongo
-    state: present
-
-
-- name: INSTALL pyOpenSSL for MongoDB
-  become: true
-  ansible.builtin.pip:
-    name: pyOpenSSL
-
-
-- name: check if mongo already installed
+- name: CHECK if mongo already installed
   stat: path=/usr/bin/mongo
   register: mongo_bin
-
-- name: MongoDB | Fetch 10Gen signing key
-  command: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
-  when: mongo_bin.stat.exists == False
-
        
 - name: INSTALL the repo key
   become: true
   ansible.builtin.apt_key:
-    url: https://www.mongodb.org/static/pgp/server-4.4.asc
+    url: "{{ mongo_repo_key_uri }}"
     state: present
   when: mongo_bin.stat.exists == False
 
@@ -49,8 +13,7 @@
   tags: mongoinstall
   become: true
   ansible.builtin.apt_repository:
-    #apt_repository:
-    repo: "deb https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse"
+    repo: "{{ mongo_deb_repo_uri }}"
     update_cache: yes
     state: present
   when: mongo_bin.stat.exists == False
@@ -58,26 +21,19 @@
 - name: INSTALL mongodb
   become: true
   apt: pkg=mongodb-org state=latest update_cache=yes
-  #notify:
-  #- start mongodb
   when: mongo_bin.stat.exists == False
 
 - name: COPY mongo config file
-  become: true
   tags: mongoconfig
-  copy:
-    src: mongo-config
-    dest: /etc/mongod.conf
-    #owner: root
-    #group: root
-    #mode: 0644
+  template: 
+    src: mongo-config.j2
+    dest: "{{ mongo_conf_path }}"
 
 - name: COPY mongo key file
-  tags: mongokey
-  become: true
-  copy:
-    src: replica-key-file
-    dest: /etc/mongokeyfile
+  tags: mongoconfig
+  ansible.builtin.copy:
+    content: "{{ mongodb_keyfile_content }}"
+    dest: "{{ mongo_repl_key_path }}"
     owner: mongodb
     group: mongodb
     mode: 0400
@@ -85,64 +41,131 @@
 - name: ADD a line in var.conf
   become: true
   ansible.builtin.lineinfile:
-    path: /usr/lib/tmpfiles.d/var.conf
+    path: "{{ mongo_deb_tmpfiles_path }}"
     state: present
-    line: d /var/run/mongodb 0750 mongodb mongodb -
+    line: "{{ mongo_deb_tmpfiles_line }}"
     create: true
 
 - name: CREATE storage directory
-  tags: createpid
+  tags: createpiddir
   become: true
   ansible.builtin.file:
-    path: /storage/db
+    path: "{{ mongo_storage_path }}"
     state: directory
     owner: mongodb
     group: mongodb
 
+- name: CHECK PID directory
+  tags: createpiddir
+  stat:
+    path: "{{ mongo_pid_dir_path }}"
+  register: pid_dir_exists
+
 - name: CREATE PID directory
-  tags: createpid
+  tags: createpiddir
   become: true
   ansible.builtin.file:
-    path: /var/run/mongodb/
+    path: "{{ mongo_pid_dir_path }}"
     state: directory
     owner: mongodb
     group: mongodb
    #mode: '0644'
-    
+  when: pid_dir_exists.stat.exists == False
+
+- name: CHECK PID file
+  tags: createpidfile
+  stat:
+    path: "{{ mongo_pid_file_path }}"
+  register: pid_file_exists
+
 - name: CREATE PID file
-  tags: createpid
+  tags: createpidfile
   become: true
   ansible.builtin.file:
-   path: /var/run/mongodb/mongod.pid
+   path: "{{ mongo_pid_file_path }}"
    state: touch
    owner: mongodb
    group: mongodb
    #mode: '0644'
+  when: pid_file_exists.stat.exists == False
    
 - name: START mongodb
-  #notify:
   tags: mongostart
   become: true
   ansible.builtin.service:
     name: mongod
     state: started
 
-# - name: Ensure replicaset rs0 exists
-#   become: true
-#   community.mongodb.mongodb_replicaset:
-#     login_host: localhost
-#     login_user: admin
-#     login_password: admin
-#     replica_set: rs0
-
-- name: Initialise MongoDB Replicaset rs0
+- name: CREATE replset
+  tags: replinit
   community.mongodb.mongodb_replicaset:
-    login_database: "admin"
+  #CHANGE 'localhost' to a real host name/IP
     login_host: localhost
-    replica_set: "rs0"
-  #   members:
-  #     - "mongodb1"
-  #     - "mongodb2"
-  #     - "mongodb3"
-  # when: ansible_hostname == "mongodb1"
-  register: repl
+    login_port: "{{ mongo_port }}"
+    login_user: "{{ mongo_admin_username }}"
+    login_password: "{{ mongo_admin_pass }}"
+    login_database: admin
+    replica_set: "{{ mongo_repl_name }}"
+    members: localhost:27017
+    validate: no
+### CHECK IF ADMIN USER EXISTS
+
+
+
+- name: CREATE 'admin user' database mongod.
+  tags: createroot
+  community.mongodb.mongodb_user:
+    database: admin
+    name: "{{ mongo_admin_username }}"
+    password: "{{ mongo_admin_pass }}"
+    roles: "{{ mongo_admin_role }}"
+    state: present
+  ignore_errors: true
+  register: output
+
+
+
+### CREATING INITIAL DB
+### TEMPORARILY THE PROCEDURE WILL BE VIA EVAL SHELL
+
+- name: CHECK first DB dbExists
+  community.mongodb.mongodb_shell:
+    login_host: 192.168.40.223
+    login_port: "{{ mongo_port }}"
+    login_user: "{{ mongo_admin_username }}"
+    login_password: "{{ mongo_admin_pass }}"
+    eval: "db.getMongo().getDBNames().indexOf('{{ mongo_db_name }}')"
+  register: dbExists
+
+- name: CREATE first database
+  community.mongodb.mongodb_shell:
+    login_host: 192.168.40.223
+    login_port: "{{ mongo_port }}"
+    login_user: "{{ mongo_admin_username }}"
+    login_password: "{{ mongo_admin_pass }}"
+    eval: "db.getSiblingDB('{{ mongo_db_name }}').createCollection('{{ mongo_dummy_collection_name }}')"
+  when: dbExists != -1
+    #eval: "db.adminCommand('listDatabases')"
+
+### CREATE USERS FOR SPECIFIC (basically the "mongo_db_name" ) FROM 
+###eval: "if(db.getUser('testuser') == null) { db.createUser({ user: 'testuser', pwd: 'testpass', roles: [ 'readWrite' ]});}"
+- name: CREATE initial DB
+  community.mongodb.mongodb_shell:
+    eval: 'db.getSiblingDB("admin").runCommand(if(db.getUser("testuser") == null) { db.createUser({ user: "testuser", pwd: "testpass", roles: [ "readWrite" ]});})'
+
+
+
+#- name: CREATE initial DB
+      #action: apt update_cache=yes pkg={{item}} state=installed
+     # with_items:
+      #  - mongodb
+
+   # - service: name=mongodb state=started
+#    - shell: mongo mydb --eval "db.createCollection('mycollection')"
+#--eval="db.getSiblingDB('ankap').createCollection('dardag')"
+
+
+- name: RESTART mongodb
+  service: 
+    name: mongod
+    state: restarted

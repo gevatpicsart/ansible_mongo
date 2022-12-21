@@ -1,0 +1,46 @@
+---
+#17:34:45
+mongo_admin_username: root
+mongo_admin_pass: password1234
+mongo_admin_db: admin
+mongo_admin_role: root
+
+mongo_stageuser_username: stageuser	
+mongo_stageuser_pass: TOu72Y45HyjviYj9x29w
+mongo_stageuser_db: "{{ mongo_db_name }}"
+mongo_stageuser_role: Write
+
+mongo_writeuser_username: writeuser
+mongo_writeuser_pass: TOu72YviYj9x29w
+mongo_writeuser_db: "{{ mongo_db_name }}"
+mongo_writeuser_role: Write
+
+mongo_indexuser_username: indexuser
+mongo_indexuser_pass: HV2z9YFdQ4y7IeZFzSa
+mongo_indexuser_db: "{{ mongo_db_name }}"
+mongo_indexuser_role: IndexManage
+
+mongo_readuser_username: readuser
+mongo_readuser_pass: UvCmkPc9PYCzxcZm
+mongo_readuser_db: "{{ mongo_db_name }}"
+mongo_readuser_role: read
+
+mongo_backend_username: backend
+mongo_backend_pass: UvCmkuyR67YCzxcZm
+mongo_backend_db: "{{ mongo_db_name }}"	
+mongo_backend_role: read
+
+mongo_backup_username: backup
+mongo_backup_pass: SUGyB656.xeCQTFvqus
+mongo_backup_db: admin
+mongo_backup_role: backup
+
+mongo_mongodb_exporter_username: mongodb_exporter
+mongo_mongodb_exporter_pass: exporter1
+mongo_mongodb_exporter_db: admin
+mongo_mongodb_exporter_role: read,clusterMonitor
+
+# mongo_admin_username: root
+# mongo_admin_pass: password1234
+# mongo_admin_db: admin
+# mongo_admin_role: root

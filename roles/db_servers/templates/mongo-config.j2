@@ -9,18 +9,13 @@ systemLog:
   logRotate: reopen
   path: /var/log/mongodb/mongod.log
 net:
-  port: 27017
+  port: {{ mongo_port }}
   bindIp: 0.0.0.0
 security:
   keyFile: /etc/mongokeyfile
 replication:
-    replSetName: xuy-v-rot
-#sharding:
-#  clusterRole: shardsvr
+    replSetName: {{ mongo_repl_name }}
 processManagement:
    pidFilePath: /var/run/mongodb/mongod.pid
-#setParameter:
-#   rangeDeleterBatchSize: 100
-#   rangeDeleterBatchDelayMS: 500
 operationProfiling:
    mode: all
